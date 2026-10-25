@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSSWebScraper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Left Neo-brutalist Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand" title="CSSWebScraper">
+        <div class="brand-monogram">CSS</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-tab="tab-fonts" id="btn-tab-fonts" title="Inspect Fonts">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+            <path d="M4 7V4h16v3"/>
+            <path d="M9 20h6"/>
+            <path d="M12 4v16"/>
+          </svg>
+          <span class="nav-label">Fonts</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-css" id="btn-tab-css" title="CSS Color Palette">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          <span class="nav-label">CSS</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-images" id="btn-tab-images" title="Extract Media">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+            <rect x="3" y="3" width="18" height="18" rx="0"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span class="nav-label">IMAGES</span>
+        </button>
+      </nav>
+
+      <!-- Bottom Pinned GitHub Action -->
+      <div class="sidebar-footer">
+        <a href="https://github.com/awtpx/CSSWebScraper" target="_blank" rel="noopener noreferrer" class="sidebar-github-btn" id="btn-github" title="View on GitHub">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span class="nav-label">GitHub</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <h1 class="header-title" id="page-heading">Fonts</h1>
+          <span class="header-badge" id="stats-badge">Loading...</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-icon-only" id="btn-refresh" title="Rescan Page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Toast Feedback -->
+      <div class="toast" id="toast">COPIED TO CLIPBOARD!</div>
+
+      <!-- Tab 1: Fonts -->
+      <section class="tab-pane active" id="tab-fonts">
+        <div class="pane-toolbar">
+          <div class="search-box">
+            <input type="text" id="fonts-search" placeholder="Filter font families..." spellcheck="false" autocomplete="off">
+            <button class="search-clear" id="fonts-search-clear">&times;</button>
+          </div>
+          <!-- Live Font Preview Controls Row -->
+          <div class="preview-controls-row">
+            <input type="text" id="fonts-preview-text" class="preview-text-input" placeholder="Type live preview text..." value="The quick brown fox jumps over the lazy dog" title="Custom preview text rendered across all font cards">
+            <div class="font-size-group">
+              <button class="chip-sm active" data-font-size="14">14px</button>
+              <button class="chip-sm" data-font-size="18">18px</button>
+              <button class="chip-sm" data-font-size="24">24px</button>
+              <button class="chip-sm" data-font-size="30">30px</button>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-container" id="fonts-list-container">
+          <!-- Dynamic Font Cards -->
+        </div>
+      </section>
+
+      <!-- Tab 2: CSS Colors -->
+      <section class="tab-pane" id="tab-css">
+        <div class="pane-toolbar">
+          <div class="toolbar-actions">
+            <button class="btn btn-primary" id="btn-export-root">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export to :root</span>
+            </button>
+            <div class="filter-group">
+              <button class="chip active" data-color-filter="all">All</button>
+              <button class="chip" data-color-filter="text">Text</button>
+              <button class="chip" data-color-filter="background">BG</button>
+              <button class="chip" data-color-filter="border">Border</button>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-container" id="colors-list-container">
+          <!-- Dynamic Color Cards Grid -->
+        </div>
+      </section>
+
+      <!-- Tab 3: Images -->
+      <section class="tab-pane" id="tab-images">
+        <div class="pane-toolbar">
+          <div class="media-toolbar-row">
+            <div class="media-btn-group">
+              <button class="btn btn-secondary btn-sm" id="btn-select-all-images">Select All</button>
+              <button class="btn btn-primary btn-sm" id="btn-download-selected">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span id="download-btn-text">Download All</span>
+              </button>
+            </div>
+            <div class="filter-group">
+              <button class="chip active" data-media-filter="all">All</button>
+              <button class="chip" data-media-filter="SVG">SVG</button>
+              <button class="chip" data-media-filter="RASTER">PNG/JPG</button>
+              <button class="chip" data-media-filter="CSS">CSS</button>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-container" id="images-list-container">
+          <!-- Dynamic Media Grid -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           MODAL 1: Color Code Preview & UI Inspector
+           ==================================================================== -->
+      <div class="modal-overlay hidden" id="modal-color-preview">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div class="modal-title-group">
+              <span class="modal-eyebrow">COLOR CODE PREVIEW</span>
+              <h2 class="modal-title" id="color-preview-hex">#0055FF</h2>
+            </div>
+            <button class="modal-close-btn" id="btn-close-color-modal" title="Close Preview">&times;</button>
+          </div>
+
+          <div class="modal-body modal-body-scroll">
+            <!-- Hero Swatch & Code Formats -->
+            <div class="color-preview-hero">
+              <div class="color-hero-swatch" id="color-hero-swatch">
+                <span class="color-hero-label" id="color-hero-contrast-text">Aa Sample Text</span>
+              </div>
+              <div class="color-code-rows">
+                <div class="code-row">
+                  <span class="code-label">HEX</span>
+                  <code class="code-val" id="color-val-hex">#0055FF</code>
+                  <button class="btn btn-sm btn-copy-format" data-format="hex">Copy</button>
+                </div>
+                <div class="code-row">
+                  <span class="code-label">RGB</span>
+                  <code class="code-val" id="color-val-rgb">rgb(0, 85, 255)</code>
+                  <button class="btn btn-sm btn-copy-format" data-format="rgb">Copy</button>
+                </div>
+                <div class="code-row">
+                  <span class="code-label">HSL</span>
+                  <code class="code-val" id="color-val-hsl">hsl(220, 100%, 50%)</code>
+                  <button class="btn btn-sm btn-copy-format" data-format="hsl">Copy</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- UI Sandbox Preview -->
+            <div class="preview-section-title">LIVE UI COMPONENT PREVIEWS</div>
+            <div class="ui-sandbox-grid">
+              <div class="sandbox-box">
+                <span class="sandbox-label">Solid Button</span>
+                <button class="sandbox-btn" id="sandbox-btn-preview">Action Button</button>
+              </div>
+              <div class="sandbox-box">
+                <span class="sandbox-label">Pill Badge</span>
+                <span class="sandbox-badge" id="sandbox-badge-preview">Active Tag</span>
+              </div>
+              <div class="sandbox-box bg-light">
+                <span class="sandbox-label">Text on Light</span>
+                <div class="sandbox-text" id="sandbox-text-light">Aa Heading 20px</div>
+              </div>
+              <div class="sandbox-box bg-dark">
+                <span class="sandbox-label">Text on Dark</span>
+                <div class="sandbox-text" id="sandbox-text-dark">Aa Heading 20px</div>
+              </div>
+            </div>
+
+            <!-- WCAG Contrast Matrix -->
+            <div class="preview-section-title">WCAG 2.1 CONTRAST &amp; ACCESSIBILITY</div>
+            <div class="wcag-matrix">
+              <div class="wcag-card">
+                <div class="wcag-header">
+                  <span>On Pure White (#FFF)</span>
+                  <span class="wcag-badge" id="wcag-white-badge">AA PASS</span>
+                </div>
+                <div class="wcag-ratio" id="wcag-white-ratio">5.6 : 1</div>
+              </div>
+              <div class="wcag-card">
+                <div class="wcag-header">
+                  <span>On Deep Black (#000)</span>
+                  <span class="wcag-badge" id="wcag-black-badge">FAIL</span>
+                </div>
+                <div class="wcag-ratio" id="wcag-black-ratio">3.7 : 1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           MODAL 2: Typographic Specimen & Font Inspector
+           ==================================================================== -->
+      <div class="modal-overlay hidden" id="modal-font-specimen">
+        <div class="modal-card modal-card-lg">
+          <div class="modal-header">
+            <div class="modal-title-group">
+              <span class="modal-eyebrow">TYPOGRAPHIC SPECIMEN</span>
+              <h2 class="modal-title" id="font-specimen-family">DM Sans</h2>
+            </div>
+            <button class="modal-close-btn" id="btn-close-font-modal" title="Close Preview">&times;</button>
+          </div>
+
+          <div class="modal-body modal-body-scroll">
+            <!-- Specimen Custom Input & Weights -->
+            <div class="specimen-controls">
+              <input type="text" id="specimen-custom-input" class="specimen-input-field" value="The quick brown fox jumps over the lazy dog" placeholder="Type custom specimen text...">
+              <div class="specimen-weight-pills" id="specimen-weights-container">
+                <!-- Dynamic weight switcher buttons -->
+              </div>
+            </div>
+
+            <!-- Large Hero Specimen -->
+            <div class="specimen-hero-preview" id="specimen-hero">
+              The quick brown fox jumps over the lazy dog
+            </div>
+
+            <!-- Alphabet Waterfall -->
+            <div class="preview-section-title">FULL CHARACTER SET WATERFALL</div>
+            <div class="specimen-waterfall" id="specimen-waterfall">
+              <div class="waterfall-line uppercase">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>
+              <div class="waterfall-line lowercase">a b c d e f g h i j k l m n o p q r s t u v w x y z</div>
+              <div class="waterfall-line numerals">0 1 2 3 4 5 6 7 8 9 &amp; @ $ % * ( ) ! ? / \ [ ] { }</div>
+            </div>
+
+            <!-- Typographic Hierarchy Scale -->
+            <div class="preview-section-title">TYPOGRAPHIC HIERARCHY SCALE</div>
+            <div class="specimen-scale" id="specimen-scale">
+              <div class="scale-item scale-h1">Display Headline 28px</div>
+              <div class="scale-item scale-h2">Section Header 20px</div>
+              <div class="scale-item scale-body">Body Copy 14px: Neo-brutalist layouts rely on high-contrast borders, punchy geometric hierarchy, and unblurred drop shadows.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="state-overlay" id="loading-overlay">
+        <div class="state-card">
+          <div class="neo-spinner"></div>
+          <h2 class="state-title">INSPECTING DOM...</h2>
+          <p class="state-desc">Aggregating computed styles, fonts, and media assets.</p>
+        </div>
+      </div>
+
+      <!-- Restricted Page / Error State -->
+      <div class="state-overlay hidden" id="error-overlay">
+        <div class="state-card error-card">
+          <div class="state-badge-error">RESTRICTED PAGE</div>
+          <h2 class="state-title">CANNOT ACCESS PAGE</h2>
+          <p class="state-desc" id="error-message">
+            Browser extensions cannot inspect browser-internal pages (e.g., chrome://, edge://, about:). Please navigate to an HTTP or HTTPS web page.
+          </p>
+          <button class="btn btn-primary" id="btn-error-retry">Retry Scan</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
